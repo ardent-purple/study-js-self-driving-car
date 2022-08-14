@@ -32,6 +32,10 @@ export default class Car {
   }
 
   update() {
+    this.#move()
+  }
+
+  #move() {
     // acceleration
     if (this.controls.forward) {
       this.speed += this.acceleration
