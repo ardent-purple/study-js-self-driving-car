@@ -1,2 +1,4 @@
 - connect steering speed to the linear speed of the vehicle
 - curved road
+- rethink all the trigonometry from the start
+- Polygonal borders (for more precise collision detection)

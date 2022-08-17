@@ -1,5 +1,6 @@
 import Controls from './Controls.js'
 import Sensor from './Sensor.js'
+import { polysIntersect } from './utils.js'
 
 export default class Car {
   constructor(x, y, w, h) {
@@ -14,30 +15,68 @@ export default class Car {
     this.maxBackwardSpeed = 1
     this.friction = 0.05
     this.angle = 0
+    this.damaged = false
 
     this.sensor = new Sensor(this)
     this.controls = new Controls()
   }
 
   draw(ctx) {
-    ctx.save()
-
-    ctx.translate(this.x, this.y)
-    ctx.rotate(-this.angle)
+    if (this.damaged) {
+      ctx.fillStyle = 'red'
+    } else {
+      ctx.fillStyle = 'black'
+    }
 
     ctx.beginPath()
-    ctx.fillStyle = '#000'
-    ctx.rect(-this.w / 2, -this.h / 2, this.w, this.h)
+    ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
+    for (let i = 0; i < this.polygon.length; i++) {
+      ctx.lineTo(this.polygon[i].x, this.polygon[i].y)
+    }
     ctx.fill()
-
-    ctx.restore()
 
     this.sensor.draw(ctx)
   }
 
   update(roadBorders) {
-    this.#move()
+    if (!this.damaged) {
+      this.#move()
+      this.polygon = this.#createPolygon()
+      this.damaged = this.#assessDamage(roadBorders)
+    }
     this.sensor.update(roadBorders)
+  }
+
+  #createPolygon() {
+    const points = []
+    const radius = Math.hypot(this.w, this.h) / 2
+    const alpha = Math.atan2(this.w, this.h)
+    points.push({
+      x: this.x - Math.sin(this.angle - alpha) * radius,
+      y: this.y - Math.cos(this.angle - alpha) * radius,
+    })
+    points.push({
+      x: this.x - Math.sin(this.angle + alpha) * radius,
+      y: this.y - Math.cos(this.angle + alpha) * radius,
+    })
+    points.push({
+      x: this.x - Math.sin(this.angle + Math.PI - alpha) * radius,
+      y: this.y - Math.cos(this.angle + Math.PI - alpha) * radius,
+    })
+    points.push({
+      x: this.x - Math.sin(this.angle + Math.PI + alpha) * radius,
+      y: this.y - Math.cos(this.angle + Math.PI + alpha) * radius,
+    })
+    return points
+  }
+
+  #assessDamage(roadBorders) {
+    for (const border of roadBorders) {
+      if (polysIntersect(this.polygon, border)) {
+        return true
+      }
+    }
+    return false
   }
 
   #move() {
