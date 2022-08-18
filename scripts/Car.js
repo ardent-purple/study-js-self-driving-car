@@ -3,7 +3,7 @@ import Sensor from './Sensor.js'
 import { polysIntersect } from './utils.js'
 
 export default class Car {
-  constructor(x, y, w, h) {
+  constructor(x, y, w, h, controlType, maxSpeed = 3) {
     this.x = x
     this.y = y
     this.w = w
@@ -11,21 +11,23 @@ export default class Car {
 
     this.speed = 0
     this.acceleration = 0.2
-    this.maxForwardSpeed = 3
+    this.maxForwardSpeed = maxSpeed
     this.maxBackwardSpeed = 1
     this.friction = 0.05
     this.angle = 0
     this.damaged = false
 
-    this.sensor = new Sensor(this)
-    this.controls = new Controls()
+    if (controlType !== 'DUMMY') {
+      this.sensor = new Sensor(this)
+    }
+    this.controls = new Controls(controlType)
   }
 
-  draw(ctx) {
+  draw(ctx, color) {
     if (this.damaged) {
       ctx.fillStyle = 'red'
     } else {
-      ctx.fillStyle = 'black'
+      ctx.fillStyle = color
     }
 
     ctx.beginPath()
@@ -35,16 +37,16 @@ export default class Car {
     }
     ctx.fill()
 
-    this.sensor.draw(ctx)
+    this.sensor?.draw(ctx)
   }
 
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move()
       this.polygon = this.#createPolygon()
-      this.damaged = this.#assessDamage(roadBorders)
+      this.damaged = this.#assessDamage(roadBorders, traffic)
     }
-    this.sensor.update(roadBorders)
+    this.sensor?.update(roadBorders, traffic)
   }
 
   #createPolygon() {
@@ -70,9 +72,14 @@ export default class Car {
     return points
   }
 
-  #assessDamage(roadBorders) {
+  #assessDamage(roadBorders, traffic) {
     for (const border of roadBorders) {
       if (polysIntersect(this.polygon, border)) {
+        return true
+      }
+    }
+    for (const trafficCar of traffic) {
+      if (polysIntersect(this.polygon, trafficCar.polygon)) {
         return true
       }
     }

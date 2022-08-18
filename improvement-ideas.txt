@@ -2,3 +2,4 @@
 - curved road
 - rethink all the trigonometry from the start
 - Polygonal borders (for more precise collision detection)
+- different amounts of hits to damage the car
