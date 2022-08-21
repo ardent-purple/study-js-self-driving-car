@@ -43,3 +43,7 @@ export function polysIntersect(poly1, poly2) {
   }
   return false
 }
+
+export function getNormalizedRandom() {
+  return Math.random() * 2 - 1
+}
