@@ -3,3 +3,10 @@
 - rethink all the trigonometry from the start
 - Polygonal borders (for more precise collision detection)
 - different amounts of hits to damage the car
+- different fitness functions:
+  - distance travelled
+  - best Y but less shaking sideways
+  - closest to the center lane
+- parenting mutation between best brains
+- less magic numbers, more config constants
+- gradations for controls (not 1 and 0, but 0 -- 1 gradient)

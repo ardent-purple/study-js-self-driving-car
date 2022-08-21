@@ -34,9 +34,9 @@ export default class Car {
     this.controls = new Controls(controlType)
   }
 
-  draw(ctx, color) {
+  draw(ctx, color, drawSensors) {
     if (this.damaged) {
-      ctx.fillStyle = 'red'
+      return
     } else {
       ctx.fillStyle = color
     }
@@ -48,7 +48,9 @@ export default class Car {
     }
     ctx.fill()
 
-    this.sensor?.draw(ctx)
+    if (drawSensors) {
+      this.sensor?.draw(ctx)
+    }
   }
 
   update(roadBorders, traffic) {
