@@ -9,5 +9,6 @@
   - closest to the center lane
 - parenting mutation between best brains
 - less magic numbers, more config constants
+- or better yet -- options to control the NN options (amount of cars, mutation strength & so on)
 - gradations for controls (not 1 and 0, but 0 -- 1 gradient)
 - Lane recognition
