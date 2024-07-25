@@ -9,4 +9,4 @@ Maybe I'll come back later to it someday to improve it a bit.
 * "Space" - save current best network in LocalStorage.
 * "Backspace" - clear current best network, start with random again.
 
-[Enjoy!](https://moody-cookie.github.io/study-js-self-driving-car/)
+[Enjoy!](https://ardent-purple.github.io/study-js-self-driving-car/)
